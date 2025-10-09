@@ -13,8 +13,7 @@ public record AnswerRequestDTO(
         @NotNull
         UUID answerId,
 
-        @Schema(example = "2025-10-05T11:07:00-03:00")
-        @NotNull(message = "Deve ser indicado data e hora como string no formato ISO-8601")
-        OffsetDateTime sentAt
+        @NotNull
+        UUID roomId
 ) {
 }

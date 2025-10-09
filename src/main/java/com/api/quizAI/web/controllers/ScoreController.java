@@ -1,8 +1,10 @@
 package com.api.quizAI.web.controllers;
 
 import com.api.quizAI.business.services.ScoreService;
+import com.api.quizAI.business.services.WebsocketService;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.web.dto.*;
+import com.api.quizAI.web.payload.UpdateScoreboardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +28,7 @@ import java.util.UUID;
 public class ScoreController
 {
     private final ScoreService scoreService;
+    private final WebsocketService websocketService;
 
     @Operation(summary = "Create user scoreboard", description = "Endpoint to create a user scoreboard when it joins a room")
     @ApiResponses(value = {
@@ -79,6 +82,8 @@ public class ScoreController
         Integer pointsEarned = scoreService.calculatePlayerScore(scoreId, answerRequest);
 
         log.info("successfully calculate points {}", scoreId);
+
+        websocketService.broadcastScoreboardUpdate(answerRequest.roomId(), new UpdateScoreboardResponse(answerRequest.userId(), pointsEarned));
 
         return new ResponseEntity<>(new ScoreResponseDTO(pointsEarned), HttpStatus.OK);
     }
