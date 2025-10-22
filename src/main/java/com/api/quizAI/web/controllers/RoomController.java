@@ -99,7 +99,7 @@ public class RoomController
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
     })
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/exit/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void exitRoom(@PathVariable("id") UUID scoreId)
     {
