@@ -1,6 +1,7 @@
 package com.api.quizAI.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,8 +28,10 @@ public class Score
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
-    @Column(nullable = false, name = "room_id")
-    private UUID roomId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
+    private Room room;
 
     public void addScore(int score)
     {
