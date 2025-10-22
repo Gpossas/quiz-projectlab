@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -122,11 +121,11 @@ public class RoomController
     })
     @DeleteMapping(value = "/{id}", consumes = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRoom(@PathVariable("id") UUID roomId, @Valid @RequestBody @NotNull UUID userId)
+    public void deleteRoom(@PathVariable("id") UUID roomId, @Valid @RequestBody UserIdRequestDTO userIdRequest)
     {
         log.info("starting room delete request");
 
-        roomService.delete(roomId, userId);
+        roomService.delete(roomId, userIdRequest.userId());
 
         log.info("successfully deleted room");
     }
