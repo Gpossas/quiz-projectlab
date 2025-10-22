@@ -47,25 +47,4 @@ public class ScoreController
 
         return new ResponseEntity<>(new ScoreResponseDTO(pointsEarned), HttpStatus.OK);
     }
-
-
-    @Operation(summary = "Get users scoreboard", description = "Return each user and score ordered")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok", content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserScoreboardResponse.class)))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
-    })
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<List<UserScoreboardResponse>> GetAllUsersAndScoreOrdered(@PathVariable("id") UUID roomId)
-    {
-        log.info("starting get users scoreboard for room {}", roomId);
-
-        List<Score> scoresOrdered = scoreService.findUsersScoreboardOrderedByScore(roomId);
-
-        log.info("successfully got users scoreboard ordered {}", roomId);
-
-        return new ResponseEntity<>(
-                scoresOrdered.stream().map(score -> new UserScoreboardResponse(score.getId(), score.getScore(), score.getUser())).toList(),
-                HttpStatus.OK);
-    }
 }

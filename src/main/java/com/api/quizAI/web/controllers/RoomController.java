@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -78,6 +79,7 @@ public class RoomController
 
         Room room = roomService.findByCode(roomCode);
         //todo: check room capacity before allowing user join room
+        List<Score> playersScoreOrdered = scoreService.findUsersScoreboardOrderedByScore(room.getId());
         Score score = scoreService.save(new CreateScoreRequestDTO(joinRoomRequest.userId(), room.getId()));
 
         log.info("successfully joined player {} in room {}", joinRoomRequest.userId(), roomCode);
@@ -88,8 +90,9 @@ public class RoomController
                 room.getIsPublic(),
                 room.getMaxNumberOfPlayers(),
                 room.getOwner(),
-                new PlayerScoreDTO(score.getId(), 0)
-        ), HttpStatus.CREATED);
+                new PlayerScoreDTO(score.getId(), 0),
+                playersScoreOrdered.stream().map(playerScoreboard -> new UserScoreboardResponse(playerScoreboard.getId(), playerScoreboard.getScore(), playerScoreboard.getUser())).toList()),
+                HttpStatus.CREATED);
     }
 
 
