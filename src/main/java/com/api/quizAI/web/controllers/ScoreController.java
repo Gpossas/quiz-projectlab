@@ -27,41 +27,6 @@ public class ScoreController
 {
     private final ScoreService scoreService;
 
-    @Operation(summary = "Create user scoreboard", description = "Endpoint to create a user scoreboard when it joins a room")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = Score.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
-    })
-    @PostMapping(value = "/create_scoreboard", consumes = "application/json")
-    public ResponseEntity<Score> createUserScoreBoard(@Valid @RequestBody CreateScoreRequestDTO createScoreboardRequest)
-    {
-        log.info("starting scoreboard creation");
-
-        Score score = scoreService.save(createScoreboardRequest);
-
-        log.info("successfully created scoreboard {}", score.getId());
-
-        return new ResponseEntity<>(score, HttpStatus.CREATED);
-    }
-
-
-    @Operation(summary = "Delete scoreboard")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "No Content", content = @Content(schema = @Schema(hidden = true))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
-    })
-    @DeleteMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRoom(@PathVariable("id") UUID scoreId)
-    {
-        log.info("starting scoreboard delete request");
-
-        scoreService.delete(scoreId);
-
-        log.info("successfully deleted scoreboard");
-    }
 
     @Operation(summary = "Calculate user answer points", description = "Return the points earned after answer")
     @ApiResponses(value = {

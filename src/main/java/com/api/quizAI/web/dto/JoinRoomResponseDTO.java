@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
 
-public record RoomCreationResponseDTO(
-        UUID id,
+public record JoinRoomResponseDTO(
+        UUID roomId,
 
         String roomCode,
 

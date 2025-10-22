@@ -1,7 +1,9 @@
 package com.api.quizAI.web.controllers;
 
 import com.api.quizAI.business.services.RoomService;
+import com.api.quizAI.business.services.ScoreService;
 import com.api.quizAI.core.domain.Room;
+import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.web.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -27,15 +30,16 @@ import java.util.UUID;
 public class RoomController
 {
     private final RoomService roomService;
+    private final ScoreService scoreService;
 
-
-    @Operation(summary = "Create room", description = "Create room to play the quiz")
+    @Operation(summary = "Create room", description = "Player create a room to play the quiz")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = RoomCreationResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
     })
     @PostMapping
+    @Transactional
     public ResponseEntity<RoomCreationResponseDTO> createRoom(@Valid @RequestBody RoomRequestDTO roomRequestDTO)
     {
         log.info("starting room creation");
@@ -45,15 +49,65 @@ public class RoomController
                 .maxNumberOfPlayers(roomRequestDTO.maxNumberOfPlayersInRoom()).build(),
                 roomRequestDTO.ownerId());
 
-        log.info("successfully created room {}", room.getId());
+        Score score = scoreService.save(new CreateScoreRequestDTO(roomRequestDTO.ownerId(), room.getId()));
+
+        log.info("successfully created room {}", room.getRoomCode());
 
         return new ResponseEntity<>(new RoomCreationResponseDTO(
                         room.getId(),
                         room.getRoomCode(),
                         room.getIsPublic(),
                         roomRequestDTO.maxNumberOfPlayersInRoom(),
-                        room.getOwner()),
+                        room.getOwner(),
+                        new PlayerScoreDTO(score.getId(), 0)),
                 HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Join room", description = "join a player to a room")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = JoinRoomResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
+    })
+    @PostMapping(value = "/join/{roomCode}", consumes = "application/json")
+    public ResponseEntity<JoinRoomResponseDTO> joinRoom(
+            @PathVariable(value = "roomCode") String roomCode,
+            @Valid @RequestBody JoinRoomRequestDTO joinRoomRequest)
+    {
+        log.info("starting request to join player {} in room {}", joinRoomRequest.userId(), roomCode);
+
+        Room room = roomService.findByCode(roomCode);
+        //todo: check room capacity before allowing user join room
+        Score score = scoreService.save(new CreateScoreRequestDTO(joinRoomRequest.userId(), room.getId()));
+
+        log.info("successfully joined player {} in room {}", joinRoomRequest.userId(), roomCode);
+
+        return new ResponseEntity<>(new JoinRoomResponseDTO(
+                room.getId(),
+                roomCode,
+                room.getIsPublic(),
+                room.getMaxNumberOfPlayers(),
+                room.getOwner(),
+                new PlayerScoreDTO(score.getId(), 0)
+        ), HttpStatus.CREATED);
+    }
+
+
+    @Operation(summary = "Exit room", description = "Exit a player of a room by deleting its scoreboard")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "No Content", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
+    })
+    @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void exitRoom(@PathVariable("id") UUID scoreId)
+    {
+        log.info("starting player scoreboard delete request {}", scoreId);
+
+        scoreService.delete(scoreId);
+
+        log.info("successfully deleted player scoreboard {}", scoreId);
     }
 
 
