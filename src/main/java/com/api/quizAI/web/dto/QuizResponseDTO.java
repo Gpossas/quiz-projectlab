@@ -31,12 +31,6 @@ public record QuizResponseDTO(
     }
 }
 
-record QuestionDTO(
-        UUID id,
-        String value,
-        Set<AnswerDTO> answers
-){}
-
 record AnswerDTO(
         UUID id,
         String value
