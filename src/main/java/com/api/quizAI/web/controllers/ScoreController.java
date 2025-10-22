@@ -28,7 +28,6 @@ import java.util.UUID;
 public class ScoreController
 {
     private final ScoreService scoreService;
-    private final WebsocketService websocketService;
 
     @Operation(summary = "Create user scoreboard", description = "Endpoint to create a user scoreboard when it joins a room")
     @ApiResponses(value = {
@@ -82,8 +81,6 @@ public class ScoreController
         Integer pointsEarned = scoreService.calculatePlayerScore(scoreId, answerRequest);
 
         log.info("successfully calculate points {}", scoreId);
-
-        websocketService.broadcastScoreboardUpdate(answerRequest.roomId(), new UpdateScoreboardResponse(answerRequest.userId(), pointsEarned));
 
         return new ResponseEntity<>(new ScoreResponseDTO(pointsEarned), HttpStatus.OK);
     }

@@ -15,10 +15,10 @@ public class WebsocketService
 
     public void broadcastScoreboardUpdate(UUID roomId, UpdateScoreboardResponse updateScoreboardResponse)
     {
-        log.info("start scoreboard broadcast on room {} of user {}", roomId, updateScoreboardResponse.userId());
+        log.info("start scoreboard broadcast on room {} of user {}", roomId, updateScoreboardResponse.player().getId());
 
         messageBroker.convertAndSend("/topic/rooms/" + roomId + "/update-score", updateScoreboardResponse);
 
-        log.info("successfully broadcast scoreboard on room {} of user {}", roomId, updateScoreboardResponse.userId());
+        log.info("successfully broadcast scoreboard on room {} of user {}", roomId, updateScoreboardResponse.player().getId());
     }
 }

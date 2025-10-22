@@ -1,10 +1,11 @@
 package com.api.quizAI.web.payload;
 
 
-import java.util.UUID;
+import com.api.quizAI.core.domain.User;
+
 
 public record UpdateScoreboardResponse(
-        UUID userId,
+        User player,
         Integer pointsEarned
 ) {
 }
