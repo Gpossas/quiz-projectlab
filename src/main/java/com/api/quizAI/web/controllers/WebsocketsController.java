@@ -4,7 +4,7 @@ import com.api.quizAI.business.services.ScoreService;
 import com.api.quizAI.business.services.WebsocketService;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.web.dto.ScoreBroadcastRequestDTO;
-import com.api.quizAI.web.payload.UpdateScoreboardResponse;
+import com.api.quizAI.web.payload.ScoreboardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,9 @@ public class WebsocketsController
 
         log.info("retrieved score for user {} in room {}", score.getUser().getUsername(), roomId);
 
-        websocketService.broadcastScoreboardUpdate(roomId, new UpdateScoreboardResponse(score.getUser(), score.getScore()));
+        websocketService.broadcastScoreboardUpdate(roomId, new ScoreboardResponse(
+                score.getId(),
+                score.getUser(),
+                score.getScore()));
     }
 }

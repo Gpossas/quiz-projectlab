@@ -1,10 +1,9 @@
 package com.api.quizAI.web.controllers;
 
 import com.api.quizAI.business.services.ScoreService;
-import com.api.quizAI.business.services.WebsocketService;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.web.dto.*;
-import com.api.quizAI.web.payload.UpdateScoreboardResponse;
+import com.api.quizAI.web.payload.ScoreboardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,7 +35,7 @@ public class ScoreController
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
     })
     @PostMapping(value = "/create_scoreboard", consumes = "application/json")
-    public ResponseEntity<Score> createUserScoreBoard(@Valid @RequestBody CreateScoreRequestDTO createScoreboardRequest)
+    public ResponseEntity<ScoreboardResponse> createUserScoreBoard(@Valid @RequestBody CreateScoreRequestDTO createScoreboardRequest)
     {
         log.info("starting scoreboard creation");
 
@@ -44,7 +43,7 @@ public class ScoreController
 
         log.info("successfully created scoreboard {}", score.getId());
 
-        return new ResponseEntity<>(score, HttpStatus.CREATED);
+        return new ResponseEntity<>(new ScoreboardResponse(score.getId(), score.getUser(), score.getScore()), HttpStatus.CREATED);
     }
 
 
