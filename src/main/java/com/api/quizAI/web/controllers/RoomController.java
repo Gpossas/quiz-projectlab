@@ -38,7 +38,7 @@ public class RoomController
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
     })
-    @PostMapping
+    @PostMapping(consumes = "application/json")
     @Transactional
     public ResponseEntity<RoomCreationResponseDTO> createRoom(@Valid @RequestBody RoomRequestDTO roomRequestDTO)
     {
@@ -99,15 +99,15 @@ public class RoomController
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
     })
-    @DeleteMapping(value = "/exit/{id}")
+    @DeleteMapping(value = "/exit/{scoreId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void exitRoom(@PathVariable("id") UUID scoreId)
+    public void exitRoom(@PathVariable("scoreId") UUID scoreId)
     {
-        log.info("starting player scoreboard delete request {}", scoreId);
+        log.info("starting player exit room request {}", scoreId);
 
         scoreService.delete(scoreId);
 
-        log.info("successfully deleted player scoreboard {}", scoreId);
+        log.info("successfully exit room request {}", scoreId);
     }
 
 
