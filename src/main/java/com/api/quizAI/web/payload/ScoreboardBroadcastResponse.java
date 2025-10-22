@@ -6,7 +6,7 @@ import com.api.quizAI.core.domain.User;
 import java.util.UUID;
 
 
-public record ScoreboardResponse(
+public record ScoreboardBroadcastResponse(
         UUID scoreId,
         User player,
         Integer pointsEarned

@@ -1,6 +1,6 @@
 package com.api.quizAI.business.services;
 
-import com.api.quizAI.web.payload.ScoreboardResponse;
+import com.api.quizAI.web.payload.ScoreboardBroadcastResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -13,7 +13,7 @@ public class WebsocketService
 {
     private final SimpMessagingTemplate messageBroker;
 
-    public void broadcastScoreboardUpdate(UUID roomId, ScoreboardResponse updateScoreboardResponse)
+    public void broadcastScoreboardUpdate(UUID roomId, ScoreboardBroadcastResponse updateScoreboardResponse)
     {
         log.info("start scoreboard broadcast on room {} of user {}", roomId, updateScoreboardResponse.player().getId());
 
