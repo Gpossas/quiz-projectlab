@@ -156,7 +156,7 @@ public class RoomController
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PublicRoomsResponseDTO.class)))),
     })
-    @GetMapping(consumes = "application/json")
+    @GetMapping
     public ResponseEntity<Set<PublicRoomsResponseDTO>> findPublicRooms()
     {
         log.info("starting find public rooms request");
