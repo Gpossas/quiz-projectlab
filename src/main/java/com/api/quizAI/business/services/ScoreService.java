@@ -1,6 +1,7 @@
 package com.api.quizAI.business.services;
 
 import com.api.quizAI.core.domain.Answer;
+import com.api.quizAI.core.domain.Room;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.core.domain.User;
 import com.api.quizAI.core.exceptions.ScoreNotFound;
@@ -21,11 +22,13 @@ public class ScoreService
     private final ScoreRepository scoreRepository;
     private final AnswerService answerService;
     private final UserService userService;
+    private final RoomService roomService;
 
     public Score save(CreateScoreRequestDTO scoreboardRequest)
     {
         User user = userService.findById(scoreboardRequest.userId());
-        Score score = new Score(0, user, scoreboardRequest.roomId());
+        Room room = roomService.findById(scoreboardRequest.roomId());
+        Score score = new Score(0, user, room);
 
         log.info("saving score to database {} of user {}", score.getId(), user.getId());
 

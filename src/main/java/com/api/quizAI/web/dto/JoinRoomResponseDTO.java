@@ -3,10 +3,11 @@ package com.api.quizAI.web.dto;
 import com.api.quizAI.core.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.util.List;
 import java.util.UUID;
 
-public record RoomCreationResponseDTO(
-        UUID id,
+public record JoinRoomResponseDTO(
+        UUID roomId,
 
         String roomCode,
 
@@ -17,6 +18,8 @@ public record RoomCreationResponseDTO(
 
         User owner,
 
-        PlayerScoreDTO scoreboard
+        PlayerScoreDTO scoreboard,
+
+        List<UserScoreboardResponse> playersScores
 ) {
 }

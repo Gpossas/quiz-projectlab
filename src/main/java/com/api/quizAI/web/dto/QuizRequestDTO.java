@@ -5,9 +5,11 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.hibernate.validator.constraints.Length;
 
 public record QuizRequestDTO(
         @Schema(example = "atletas olímpicos")
+        @Length(max = 120, message = "O tópico deve ter até 120 caracteres")
         @NotBlank(message = "O tópico para as questões não deve estar em branco")
         String topic,
 

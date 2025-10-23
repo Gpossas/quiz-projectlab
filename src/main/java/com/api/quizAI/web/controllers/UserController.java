@@ -1,11 +1,9 @@
 package com.api.quizAI.web.controllers;
 
 import com.api.quizAI.business.services.UserService;
-import com.api.quizAI.core.domain.Quiz;
 import com.api.quizAI.core.domain.User;
 import com.api.quizAI.web.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

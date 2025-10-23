@@ -1,10 +1,13 @@
 package com.api.quizAI.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -38,17 +41,20 @@ public class Room
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Score> scores = new ArrayList<>();
+
     private String generateRandomString()
     {
         final String charactersAllowed = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         SecureRandom random = new SecureRandom();
 
         StringBuilder stringBuilder = new StringBuilder();
-        int maxLength = 8;
+        int maxCodeLength = 8;
 
-        for (int i = 0; i < maxLength; i++)
+        for (int i = 0; i < maxCodeLength; i++)
         {
-            stringBuilder.append(random.nextInt(charactersAllowed.length()));
+            stringBuilder.append(charactersAllowed.charAt(random.nextInt(0, charactersAllowed.length())));
         }
 
         return stringBuilder.toString();
