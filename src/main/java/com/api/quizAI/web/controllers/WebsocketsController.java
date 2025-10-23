@@ -4,6 +4,8 @@ import com.api.quizAI.business.services.ScoreService;
 import com.api.quizAI.business.services.WebsocketService;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.web.dto.ScoreBroadcastRequestDTO;
+import com.api.quizAI.web.dto.UserScoreboardResponse;
+import com.api.quizAI.web.payload.PlayerJoinRequest;
 import com.api.quizAI.web.payload.ScoreboardBroadcastResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -38,5 +40,21 @@ public class WebsocketsController
                 score.getId(),
                 score.getUser(),
                 playerRequest.pointsEarned()));
+    }
+
+    @Operation(summary = "broadcast player join to others in room")
+    @MessageMapping("/sendPlayerJoin/{roomId}")
+    public void broadcastPlayerJoin(@DestinationVariable UUID roomId, @Valid @Payload PlayerJoinRequest playerRequest)
+    {
+        log.info("received request from client to broadcast player join in room {}", roomId);
+
+        Score score = scoreService.findById(playerRequest.scoreId());
+
+        log.info("retrieved score for player {} in room {}", score.getUser().getUsername(), roomId);
+
+        websocketService.broadcastPlayerJoinRoom(roomId, new UserScoreboardResponse(
+                score.getId(),
+                0,
+                score.getUser()));
     }
 }
