@@ -32,6 +32,24 @@ public class WebsocketService
         log.info("successfully broadcast scoreboard on room {} of user {}", roomId, updateScoreboardResponse.player().getId());
     }
 
+    public void broadcastPlayerJoinRoom(UUID roomId, UserScoreboardResponse playerScoreResponse)
+    {
+        log.info("start user {} join room {} broadcast", roomId, playerScoreResponse.player().getId());
+
+        messageBroker.convertAndSend("/topic/rooms/" + roomId + "/join", playerScoreResponse);
+
+        log.info("successfully broadcast player {} join on room {}", playerScoreResponse.player().getId(), roomId);
+    }
+
+    public void broadcastPlayerLeftRoom(UUID roomId, PlayerLeftResponse playerLeftResponse)
+    {
+        log.info("start user {} left room {} broadcast", roomId, playerLeftResponse.player().getId());
+
+        messageBroker.convertAndSend("/topic/rooms/" + roomId + "/exit", playerLeftResponse);
+
+        log.info("successfully broadcast player {} left on room {}", playerLeftResponse.player().getId(), roomId);
+    }
+
     public void startMatch(Room room)
     {
         log.info("start match request initiated for room {}", room.getId());

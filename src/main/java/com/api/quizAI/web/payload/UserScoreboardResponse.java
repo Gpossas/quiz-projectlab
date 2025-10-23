@@ -1,4 +1,4 @@
-package com.api.quizAI.web.dto;
+package com.api.quizAI.web.payload;
 
 import com.api.quizAI.core.domain.User;
 

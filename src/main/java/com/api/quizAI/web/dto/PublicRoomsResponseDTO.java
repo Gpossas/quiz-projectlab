@@ -19,7 +19,7 @@ public record PublicRoomsResponseDTO(
                 room.getId(),
                 room.getRoomCode(),
                 room.getMaxNumberOfPlayers(),
-                room.getQuiz().getTopic(),
+                (room.getQuiz() != null) ? room.getQuiz().getTopic() : "Tópico Não Definido",
                 room.getOwner().getUsername()
         )).collect(Collectors.toSet());
     }
