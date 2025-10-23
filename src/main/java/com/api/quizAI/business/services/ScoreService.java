@@ -1,7 +1,6 @@
 package com.api.quizAI.business.services;
 
 import com.api.quizAI.core.domain.Answer;
-import com.api.quizAI.core.domain.Room;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.core.domain.User;
 import com.api.quizAI.core.exceptions.ScoreNotFound;
@@ -27,8 +26,7 @@ public class ScoreService
     public Score save(CreateScoreRequestDTO scoreboardRequest)
     {
         User user = userService.findById(scoreboardRequest.userId());
-        Room room = roomService.findById(scoreboardRequest.roomId());
-        Score score = new Score(0, user, room);
+        Score score = new Score(0, user, scoreboardRequest.roomId());
 
         log.info("saving score to database {} of user {}", score.getId(), user.getId());
 
@@ -60,6 +58,17 @@ public class ScoreService
         log.info("deleted score {}", scoreId);
     }
 
+    private Set<Score> findScoresByRoomId(UUID roomId)
+    {
+        log.info("searching all scores in room {}", roomId);
+
+        Set<Score> scores = scoreRepository.findByRoomId(roomId);
+
+        log.info("got all scores in room {}", roomId);
+
+        return scores;
+    }
+
     public Integer calculatePlayerScore(UUID scoreId, AnswerRequestDTO answerRequest)
     {
         Answer answer = answerService.findById(answerRequest.answerId());
@@ -79,16 +88,23 @@ public class ScoreService
 
     public List<Score> findUsersScoreboardOrderedByScore(UUID roomId)
     {
-        log.info("searching all scores in room {}", roomId);
-
-        Set<Score> scores = scoreRepository.findByRoomId(roomId);
+        Set<Score> scores = findScoresByRoomId(roomId);
 
         List<Score> scoresOrdered = new ArrayList<>(scores.stream().toList());
         scoresOrdered.sort(Comparator.comparingInt(Score::getScore).reversed());
 
-        log.info("got all scores in room ordered {}", roomId);
+        log.info("ordered scores in descending order in room {}", roomId);
 
         return scoresOrdered;
     }
 
+    public void deleteAllScoresInRoom(UUID roomId)
+    {
+        log.info("starting deletion of all scores in room {}", roomId);
+
+        Set<Score> scores = findScoresByRoomId(roomId);
+        scoreRepository.deleteAll(scores);
+
+        log.info("deleted all scores in room {}", roomId);
+    }
 }

@@ -123,11 +123,12 @@ public class RoomController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteRoom(@PathVariable("id") UUID roomId, @Valid @RequestBody UserIdRequestDTO userIdRequest)
     {
-        log.info("starting room delete request");
+        log.info("starting room delete request {}", roomId);
 
+        scoreService.deleteAllScoresInRoom(roomId);
         roomService.delete(roomId, userIdRequest.userId());
 
-        log.info("successfully deleted room");
+        log.info("successfully deleted room {}", roomId);
     }
 
 

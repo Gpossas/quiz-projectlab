@@ -1,13 +1,10 @@
 package com.api.quizAI.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -40,9 +37,6 @@ public class Room
     @OneToOne(optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
-
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Score> scores = new ArrayList<>();
 
     private String generateRandomString()
     {
