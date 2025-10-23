@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Service
@@ -17,6 +18,17 @@ import java.util.UUID;
 public class QuestionService
 {
     private final QuestionRepository questionRepository;
+
+    private Question save(Question question)
+    {
+        log.info("Saving question to database {}", question.getId());
+
+        question = questionRepository.save(question);
+
+        log.info("persisted question to database {}", question.getId());
+
+        return question;
+    }
 
     public Question findById(UUID questionId)
     {
@@ -29,18 +41,29 @@ public class QuestionService
         return question;
     }
 
-    public UUID findCorrectAnswer(UUID questionId)
+    public UUID findCorrectAnswer(Question question)
     {
-        Question question = findById(questionId);
+        log.info("checking correct answer for question {}", question.getId());
 
         for (Answer answer: question.getAnswers())
         {
             if (answer.isCorrectAnswer())
             {
+                log.info("found correct answer for question {}", question.getId());
                 return answer.getId();
             }
         }
 
         throw new NoneCorrectAnswerFound();
+    }
+
+    public void setTimeSentToMatch(Question question)
+    {
+        log.info("setting time sent for question {}", question.getId());
+
+        question.setSentAt(OffsetDateTime.now());
+        save(question);
+
+        log.info("finished time sent for question");
     }
 }

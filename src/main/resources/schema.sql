@@ -6,6 +6,7 @@ create table if not exists quizzes(
 create table if not exists questions(
     id UUID primary key,
     question_value text not null,
+    sent_at timestamp,
     quiz_id UUID not null,
     constraint quiz_fk
         foreign key (quiz_id)

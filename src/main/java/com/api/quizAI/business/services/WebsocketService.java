@@ -21,6 +21,7 @@ public class WebsocketService
 {
     private final SimpMessagingTemplate messageBroker;
     private final RoomService roomService;
+    private final QuestionService questionService;
 
     public void broadcastScoreboardUpdate(UUID roomId, ScoreboardBroadcastResponse updateScoreboardResponse)
     {
@@ -44,8 +45,10 @@ public class WebsocketService
         log.info("match started!");
         for (Question question: quiz.getQuestions())
         {
+            questionService.setTimeSentToMatch(question);
             messageBroker.convertAndSend("/topic/rooms/" + room.getId() + "/question", QuestionDTO.domainToDTO(question));
             log.info("question {} sent to users in room {}", question.getId(), room.getId());
+
             broadcastCountdownTo("/question-countdown", room.getWaitTimeBetweenQuestions(), room.getId());
         }
 

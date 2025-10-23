@@ -1,19 +1,23 @@
 package com.api.quizAI.web.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record AnswerRequestDTO(
         @NotNull
-        UUID userId,
+        UUID playerId,
 
         @NotNull
         UUID answerId,
 
         @NotNull
-        UUID roomId
+        UUID roomId,
+
+        @NotNull
+        UUID questionId,
+
+        @NotNull
+        UUID scoreId
 ) {
 }
