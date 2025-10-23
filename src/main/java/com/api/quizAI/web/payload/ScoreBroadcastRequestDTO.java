@@ -1,4 +1,4 @@
-package com.api.quizAI.web.dto;
+package com.api.quizAI.web.payload;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
