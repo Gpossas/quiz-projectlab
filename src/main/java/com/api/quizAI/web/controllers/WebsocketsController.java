@@ -56,7 +56,7 @@ public class WebsocketsController
     }
 
     @Operation(summary = "broadcast player left to others in room")
-    @MessageMapping("/sendPlayerExit/{roomId}")
+    @MessageMapping("/sendPlayerLeft/{roomId}")
     public void broadcastPlayerLeft(@DestinationVariable UUID roomId, @Valid @Payload PlayerLeftRequest playerRequest)
     {
         log.info("received request from client to broadcast player exit in room {}", roomId);
