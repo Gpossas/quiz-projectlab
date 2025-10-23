@@ -5,6 +5,7 @@ import com.api.quizAI.business.services.ScoreService;
 import com.api.quizAI.core.domain.Room;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.web.dto.*;
+import com.api.quizAI.web.payload.UserScoreboardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

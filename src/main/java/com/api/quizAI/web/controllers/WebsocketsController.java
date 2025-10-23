@@ -3,10 +3,7 @@ package com.api.quizAI.web.controllers;
 import com.api.quizAI.business.services.ScoreService;
 import com.api.quizAI.business.services.WebsocketService;
 import com.api.quizAI.core.domain.Score;
-import com.api.quizAI.web.dto.ScoreBroadcastRequestDTO;
-import com.api.quizAI.web.dto.UserScoreboardResponse;
-import com.api.quizAI.web.payload.PlayerJoinRequest;
-import com.api.quizAI.web.payload.ScoreboardBroadcastResponse;
+import com.api.quizAI.web.payload.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +24,7 @@ public class WebsocketsController
     private final WebsocketService websocketService;
 
     @Operation(summary = "broadcast player scoreboard to others in room")
-    @MessageMapping("/sendPlayerScoreboard/{roomId}")
+    @MessageMapping("/sendPlayerScore/{roomId}")
     public void broadcastPlayerScoreboard(@DestinationVariable UUID roomId, @Valid @Payload ScoreBroadcastRequestDTO playerRequest)
     {
         log.info("received request from client to broadcast player scoreboard in room {}", roomId);
@@ -55,6 +52,19 @@ public class WebsocketsController
         websocketService.broadcastPlayerJoinRoom(roomId, new UserScoreboardResponse(
                 score.getId(),
                 0,
+                score.getUser()));
+    }
+
+    @Operation(summary = "broadcast player left to others in room")
+    @MessageMapping("/sendPlayerExit/{roomId}")
+    public void broadcastPlayerLeft(@DestinationVariable UUID roomId, @Valid @Payload PlayerLeftRequest playerRequest)
+    {
+        log.info("received request from client to broadcast player exit in room {}", roomId);
+
+        Score score = scoreService.findById(playerRequest.scoreId());
+
+        websocketService.broadcastPlayerLeftRoom(roomId, new PlayerLeftResponse(
+                score.getId(),
                 score.getUser()));
     }
 }

@@ -1,6 +1,7 @@
 package com.api.quizAI.web.dto;
 
 import com.api.quizAI.core.domain.User;
+import com.api.quizAI.web.payload.UserScoreboardResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;

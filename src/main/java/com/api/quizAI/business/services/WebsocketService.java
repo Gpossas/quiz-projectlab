@@ -1,6 +1,7 @@
 package com.api.quizAI.business.services;
 
-import com.api.quizAI.web.dto.UserScoreboardResponse;
+import com.api.quizAI.web.payload.UserScoreboardResponse;
+import com.api.quizAI.web.payload.PlayerLeftResponse;
 import com.api.quizAI.web.payload.ScoreboardBroadcastResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,14 @@ public class WebsocketService
         messageBroker.convertAndSend("/topic/rooms/" + roomId + "/join", playerScoreResponse);
 
         log.info("successfully broadcast player {} join on room {}", playerScoreResponse.player().getId(), roomId);
+    }
 
+    public void broadcastPlayerLeftRoom(UUID roomId, PlayerLeftResponse playerLeftResponse)
+    {
+        log.info("start user {} left room {} broadcast", roomId, playerLeftResponse.player().getId());
+
+        messageBroker.convertAndSend("/topic/rooms/" + roomId + "/exit", playerLeftResponse);
+
+        log.info("successfully broadcast player {} left on room {}", playerLeftResponse.player().getId(), roomId);
     }
 }
