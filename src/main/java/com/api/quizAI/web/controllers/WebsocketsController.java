@@ -67,4 +67,15 @@ public class WebsocketsController
                 score.getId(),
                 score.getUser()));
     }
+
+    @Operation(summary = "start match!")
+    @MessageMapping("/sendStartMatch/{roomId}")
+    public void broadcastStartMatch(@DestinationVariable UUID roomId, @Valid @Payload StartMatchRequest startMatchRequest)
+    {
+        log.info("received request from client to broadcast start match in room {}", roomId);
+
+        websocketService.startMatch(startMatchRequest);
+
+        log.info("ended broadcast of match in room {}", roomId);
+    }
 }

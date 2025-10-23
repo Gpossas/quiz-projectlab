@@ -95,4 +95,12 @@ public class GlobalExceptionHandler
         problemDetail.setTitle("Alternativa correta não encontrada");
         return problemDetail;
     }
+
+    @ExceptionHandler(MatchCanNotStartWithoutQuiz.class)
+    public ProblemDetail handleMatchCanNotStartWithoutQuizException(MatchCanNotStartWithoutQuiz exception)
+    {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FAILED_DEPENDENCY, exception.getMessage());
+        problemDetail.setTitle("Não pode inicar uma partida sem quiz");
+        return problemDetail;
+    }
 }

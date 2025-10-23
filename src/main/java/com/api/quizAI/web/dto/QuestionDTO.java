@@ -7,8 +7,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public record QuestionDTO(
-        UUID id,
-        String value,
+        UUID questionId,
+        String description,
         Set<AnswerDTO> answers
 ){
     public static QuestionDTO domainToDTO(Question question)

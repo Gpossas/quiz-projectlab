@@ -1,13 +1,12 @@
 package com.api.quizAI.business.services;
 
+import com.api.quizAI.business.authorization.RoomAuthorization;
 import com.api.quizAI.core.domain.Question;
-import com.api.quizAI.core.domain.Quiz;
 import com.api.quizAI.core.domain.Room;
+import com.api.quizAI.core.domain.User;
+import com.api.quizAI.core.exceptions.MatchCanNotStartWithoutQuiz;
 import com.api.quizAI.web.dto.QuestionDTO;
-import com.api.quizAI.web.payload.CountdownResponseDTO;
-import com.api.quizAI.web.payload.PlayerLeftResponse;
-import com.api.quizAI.web.payload.ScoreboardBroadcastResponse;
-import com.api.quizAI.web.payload.UserScoreboardResponse;
+import com.api.quizAI.web.payload.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -24,6 +23,8 @@ public class WebsocketService
     private final SimpMessagingTemplate messageBroker;
     private final RoomService roomService;
     private final QuestionService questionService;
+    private final UserService userService;
+    private final RoomAuthorization roomAuthorization;
 
     public void broadcastScoreboardUpdate(UUID roomId, ScoreboardBroadcastResponse updateScoreboardResponse)
     {
@@ -52,24 +53,31 @@ public class WebsocketService
         log.info("successfully broadcast player {} left on room {}", playerLeftResponse.player().getId(), roomId);
     }
 
-    public void startMatch(Room room)
+    public void startMatch(StartMatchRequest matchRequest)
     {
-        log.info("start match request initiated for room {}", room.getId());
+        log.info("start match request initiated for room {}", matchRequest.roomId());
 
-        Quiz quiz = roomService.findById(room.getId()).getQuiz();
+        Room room = roomService.findById(matchRequest.roomId());
+        User user = userService.findById(matchRequest.playerId());
+        roomAuthorization.verifyRoomOwner(room, user);
 
-        log.info("quiz of room {} found, starting match countdown", room.getId());
+        if (room.getQuiz() == null)
+        {
+            throw new MatchCanNotStartWithoutQuiz();
+        }
 
-        broadcastCountdownTo("/start-match-countdown", 5, room.getId());
+        log.info("quiz of room {} found, starting match countdown", matchRequest.roomId());
+
+        broadcastCountdownTo("/start-match-countdown", 5, matchRequest.roomId());
 
         log.info("match started!");
-        for (Question question: quiz.getQuestions())
+        for (Question question: room.getQuiz().getQuestions())
         {
             questionService.setTimeSentToMatch(question);
-            messageBroker.convertAndSend("/topic/rooms/" + room.getId() + "/question", QuestionDTO.domainToDTO(question));
-            log.info("question {} sent to users in room {}", question.getId(), room.getId());
+            messageBroker.convertAndSend("/topic/rooms/" + matchRequest.roomId() + "/question", QuestionDTO.domainToDTO(question));
+            log.info("question {} sent to users in room {}", question.getId(), matchRequest.roomId());
 
-            broadcastCountdownTo("/question-countdown", room.getWaitTimeBetweenQuestions(), room.getId());
+            broadcastCountdownTo("/question-countdown", room.getWaitTimeBetweenQuestions(), matchRequest.roomId());
         }
 
         log.info("match finished");

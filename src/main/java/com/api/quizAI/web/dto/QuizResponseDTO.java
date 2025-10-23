@@ -32,6 +32,6 @@ public record QuizResponseDTO(
 }
 
 record AnswerDTO(
-        UUID id,
-        String value
+        UUID answerId,
+        String description
 ){}
