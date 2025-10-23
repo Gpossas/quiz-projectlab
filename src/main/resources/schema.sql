@@ -33,7 +33,7 @@ create table if not exists rooms(
     is_public boolean not null default true,
     max_number_players integer,
     quiz_id UUID,
-    owner_id UUID not null,
+    owner_id UUID not null unique,
     constraint room_quiz_fk
         foreign key (quiz_id)
         references quizzes (id),
@@ -45,6 +45,6 @@ create table if not exists rooms(
 create table if not exists scores(
     id UUID primary key,
     score integer not null default 0,
-    user_id UUID not null,
+    user_id UUID not null unique,
     room_id UUID not null
 );

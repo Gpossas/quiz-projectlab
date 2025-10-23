@@ -4,6 +4,7 @@ import com.api.quizAI.business.authorization.RoomAuthorization;
 import com.api.quizAI.core.domain.Quiz;
 import com.api.quizAI.core.domain.Room;
 import com.api.quizAI.core.domain.User;
+import com.api.quizAI.core.exceptions.PlayerAlreadyInOtherRoom;
 import com.api.quizAI.core.exceptions.RoomNotFound;
 import com.api.quizAI.infra.repository.RoomRepository;
 import com.api.quizAI.web.dto.UpdateRoomDTO;
@@ -29,6 +30,7 @@ public class RoomService
     {
         log.info("Saving room to database {}", room.getId());
 
+        checkUserInOtherRoom(userId);
         User user = userService.findById(userId);
         room.setOwner(user);
         room = roomRepository.save(room);
@@ -109,5 +111,13 @@ public class RoomService
 
         room = roomRepository.save(room);
         return room;
+    }
+
+    private void checkUserInOtherRoom(UUID userId)
+    {
+        if (roomRepository.existsByOwnerId(userId))
+        {
+            throw new PlayerAlreadyInOtherRoom();
+        }
     }
 }
