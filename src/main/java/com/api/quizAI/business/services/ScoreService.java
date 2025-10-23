@@ -1,13 +1,10 @@
 package com.api.quizAI.business.services;
 
 import com.api.quizAI.business.factories.ScoreFactory;
-import com.api.quizAI.core.domain.Answer;
-import com.api.quizAI.core.domain.Question;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.core.domain.User;
 import com.api.quizAI.core.exceptions.ScoreNotFound;
 import com.api.quizAI.infra.repository.ScoreRepository;
-import com.api.quizAI.web.dto.AnswerRequestDTO;
 import com.api.quizAI.web.dto.CalculatePlayerScoreDTO;
 import com.api.quizAI.web.dto.CreateScoreRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +21,6 @@ public class ScoreService
     private final ScoreRepository scoreRepository;
     private final UserService userService;
     private final ScoreFactory scoreFactory;
-    private final RoomService roomService;
     private final int basePoint = 10;
 
     public Score save(CreateScoreRequestDTO scoreboardRequest)
@@ -73,7 +69,7 @@ public class ScoreService
         return scores;
     }
 
-    public Integer calculatePlayerScore(UUID scoreId, AnswerRequestDTO answerRequest)
+    public Integer calculatePlayerScore(CalculatePlayerScoreDTO dto)
     {
         int pointsEarned = dto.isCorrectAnswer() ? basePoint + scoreFactory.getBonus(dto.questionWasSentAt(), dto.totalTimeToAnswerQuestionInSeconds()) : -2;
 
