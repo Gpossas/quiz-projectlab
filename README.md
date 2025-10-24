@@ -22,7 +22,7 @@ SEND: /quizAI/sendPlayerJoin/{roomId}
 ```
 
 ```
-SUBSCRIBE: /topic/room/{roomId} 
+SUBSCRIBE: /topic/rooms/{roomId}/join 
  Response: {
     "scoreId": "UUID",
     "score": 0,
@@ -43,7 +43,7 @@ SEND: /quizAI/sendPlayerLeft/{roomId}
 ```
 
 ```
-SUBSCRIBE: /topic/room/{roomId}/exit
+SUBSCRIBE: /topic/rooms/{roomId}/exit
  Response: {
     "scoreId": "UUID",
     "player": {
@@ -64,7 +64,7 @@ SEND: /quizAI/sendPlayerScore/{roomId}
 ```
 
 ```
-SUBSCRIBE: /topic/room/{roomId}/update-score
+SUBSCRIBE: /topic/rooms/{roomId}/update-score
  Response: {
     "scoreId": "UUID",
     "player": {
