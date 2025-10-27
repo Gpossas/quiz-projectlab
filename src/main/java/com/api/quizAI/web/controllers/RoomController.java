@@ -47,7 +47,8 @@ public class RoomController
 
         Room room = roomService.save(Room.builder()
                 .isPublic(roomRequestDTO.isPublic())
-                .maxNumberOfPlayers(roomRequestDTO.maxNumberOfPlayersInRoom()).build(),
+                .maxNumberOfPlayers(roomRequestDTO.maxNumberOfPlayersInRoom())
+                .waitTimeBetweenQuestions(roomRequestDTO.waitTimeInSeconds()).build(),
                 roomRequestDTO.ownerId());
 
         Score score = scoreService.save(new CreateScoreRequestDTO(roomRequestDTO.ownerId(), room.getId()));
