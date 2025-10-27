@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -53,12 +54,13 @@ public class WebsocketService
         log.info("successfully broadcast player {} left on room {}", playerLeftResponse.player().getId(), roomId);
     }
 
-    public void startMatch(StartMatchRequest matchRequest)
+    @Transactional
+    public void startMatch(UUID roomId, UUID playerId)
     {
-        log.info("start match request initiated for room {}", matchRequest.roomId());
+        log.info("start match request initiated for room {}", roomId);
 
-        Room room = roomService.findById(matchRequest.roomId());
-        User user = userService.findById(matchRequest.playerId());
+        Room room = roomService.findById(roomId);
+        User user = userService.findById(playerId);
         roomAuthorization.verifyRoomOwner(room, user);
 
         if (room.getQuiz() == null)
@@ -66,18 +68,18 @@ public class WebsocketService
             throw new MatchCanNotStartWithoutQuiz();
         }
 
-        log.info("quiz of room {} found, starting match countdown", matchRequest.roomId());
+        log.info("quiz of room {} found, starting match countdown", roomId);
 
-        broadcastCountdownTo("/start-match-countdown", 5, matchRequest.roomId());
+        broadcastCountdownTo("/start-match-countdown", 5, roomId);
 
         log.info("match started!");
         for (Question question: room.getQuiz().getQuestions())
         {
             questionService.setTimeSentToMatch(question);
-            messageBroker.convertAndSend("/topic/rooms/" + matchRequest.roomId() + "/question", QuestionDTO.domainToDTO(question));
-            log.info("question {} sent to users in room {}", question.getId(), matchRequest.roomId());
+            messageBroker.convertAndSend("/topic/rooms/" + roomId + "/question", QuestionDTO.domainToDTO(question));
+            log.info("question {} sent to users in room {}", question.getId(), roomId);
 
-            broadcastCountdownTo("/question-countdown", room.getWaitTimeBetweenQuestions(), matchRequest.roomId());
+            broadcastCountdownTo("/question-countdown", room.getWaitTimeBetweenQuestions(), roomId);
         }
 
         log.info("match finished");
