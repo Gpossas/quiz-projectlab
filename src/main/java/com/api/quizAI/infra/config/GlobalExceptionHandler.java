@@ -95,4 +95,12 @@ public class GlobalExceptionHandler
         problemDetail.setTitle("Alternativa correta não encontrada");
         return problemDetail;
     }
+
+    @ExceptionHandler(PlayerAlreadyInOtherRoom.class)
+    public ProblemDetail handlePlayerAlreadyInOtherRoomException(PlayerAlreadyInOtherRoom exception)
+    {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+        problemDetail.setTitle("Jogador já está em outra sala");
+        return problemDetail;
+    }
 }

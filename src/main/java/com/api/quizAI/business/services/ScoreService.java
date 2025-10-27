@@ -3,6 +3,7 @@ package com.api.quizAI.business.services;
 import com.api.quizAI.core.domain.Answer;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.core.domain.User;
+import com.api.quizAI.core.exceptions.PlayerAlreadyInOtherRoom;
 import com.api.quizAI.core.exceptions.ScoreNotFound;
 import com.api.quizAI.infra.repository.ScoreRepository;
 import com.api.quizAI.web.dto.AnswerRequestDTO;
@@ -21,10 +22,10 @@ public class ScoreService
     private final ScoreRepository scoreRepository;
     private final AnswerService answerService;
     private final UserService userService;
-    private final RoomService roomService;
 
     public Score save(CreateScoreRequestDTO scoreboardRequest)
     {
+        checkUserInOtherRoom(scoreboardRequest.userId());
         User user = userService.findById(scoreboardRequest.userId());
         Score score = new Score(0, user, scoreboardRequest.roomId());
 
@@ -106,5 +107,13 @@ public class ScoreService
         scoreRepository.deleteAll(scores);
 
         log.info("deleted all scores in room {}", roomId);
+    }
+
+    private void checkUserInOtherRoom(UUID userId)
+    {
+        if (scoreRepository.existsByUserId(userId))
+        {
+            throw new PlayerAlreadyInOtherRoom();
+        }
     }
 }
