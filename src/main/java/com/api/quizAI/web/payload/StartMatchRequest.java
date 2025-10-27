@@ -6,9 +6,6 @@ import java.util.UUID;
 
 public record StartMatchRequest(
         @NotNull
-        UUID roomId,
-
-        @NotNull
         UUID playerId
 ) {
 }

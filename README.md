@@ -81,7 +81,6 @@ SUBSCRIBE: /topic/room/{roomId}/update-score
 ```
 SEND: /quizAI/sendStartMatch/{roomId}
  Payload: {
-    "scoreId": "UUID",
     "playerId": "UUID"
  }
 ```
