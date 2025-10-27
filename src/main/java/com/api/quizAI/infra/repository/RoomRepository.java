@@ -9,8 +9,9 @@ import java.util.UUID;
 
 public interface RoomRepository extends JpaRepository<Room, UUID>
 {
-    public Optional<Room> findByRoomCode(String code);
+    Optional<Room> findByRoomCode(String code);
 
-    public Set<Room> findByIsPublicTrue();
+    Set<Room> findByIsPublicTrue();
 
+    Boolean existsByOwnerId(UUID userId);
 }

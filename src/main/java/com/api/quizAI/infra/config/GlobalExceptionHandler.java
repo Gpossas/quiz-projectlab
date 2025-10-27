@@ -103,4 +103,12 @@ public class GlobalExceptionHandler
         problemDetail.setTitle("Não pode inicar uma partida sem quiz");
         return problemDetail;
     }
+
+    @ExceptionHandler(PlayerAlreadyInOtherRoom.class)
+    public ProblemDetail handlePlayerAlreadyInOtherRoomException(PlayerAlreadyInOtherRoom exception)
+    {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+        problemDetail.setTitle("Jogador já está em outra sala");
+        return problemDetail;
+    }
 }

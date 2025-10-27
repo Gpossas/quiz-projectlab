@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface ScoreRepository extends JpaRepository<Score, UUID>
 {
     Set<Score> findByRoomId(UUID roomId);
+
+    Boolean existsByUserId(UUID userId);
 }
