@@ -61,7 +61,7 @@ public class RoomController
                         room.getIsPublic(),
                         roomRequestDTO.maxNumberOfPlayersInRoom(),
                         room.getOwner(),
-                        new PlayerScoreDTO(score.getId(), 0)),
+                        new PlayerScoreDTO(score.getId(), 0, score.getUser())),
                 HttpStatus.CREATED);
     }
 
@@ -92,7 +92,7 @@ public class RoomController
                 room.getIsPublic(),
                 room.getMaxNumberOfPlayers(),
                 room.getOwner(),
-                new PlayerScoreDTO(score.getId(), 0),
+                new PlayerScoreDTO(score.getId(), 0, score.getUser()),
                 playersScoreOrdered.stream().map(playerScoreboard -> new UserScoreboardResponse(playerScoreboard.getId(), playerScoreboard.getScore(), playerScoreboard.getUser())).toList()),
                 HttpStatus.CREATED);
     }
