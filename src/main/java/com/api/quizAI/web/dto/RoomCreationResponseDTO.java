@@ -17,6 +17,6 @@ public record RoomCreationResponseDTO(
 
         User owner,
 
-        PlayerScoreDTO scoreboard
+        PlayerScoreDTO ownerScoreboard
 ) {
 }

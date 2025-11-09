@@ -3,15 +3,22 @@ package com.api.quizAI.business.services;
 import com.api.quizAI.business.authorization.RoomAuthorization;
 import com.api.quizAI.core.domain.Quiz;
 import com.api.quizAI.core.domain.Room;
+import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.core.domain.User;
 import com.api.quizAI.core.exceptions.PlayerAlreadyInOtherRoom;
+import com.api.quizAI.core.exceptions.RoomIsFull;
 import com.api.quizAI.core.exceptions.RoomNotFound;
 import com.api.quizAI.infra.repository.RoomRepository;
+import com.api.quizAI.web.dto.CreateScoreRequestDTO;
+import com.api.quizAI.web.dto.JoinRoomResponseDTO;
+import com.api.quizAI.web.dto.PlayerScoreDTO;
 import com.api.quizAI.web.dto.UpdateRoomDTO;
+import com.api.quizAI.web.payload.UserScoreboardResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,6 +32,7 @@ public class RoomService
     private final QuizService quizService;
     private final UserService userService;
     private final RoomAuthorization roomAuthorization;
+    private final ScoreService scoreService;
 
     public Room save(Room room, UUID userId)
     {
@@ -119,5 +127,29 @@ public class RoomService
         {
             throw new PlayerAlreadyInOtherRoom();
         }
+    }
+
+    public JoinRoomResponseDTO joinRoom(String roomCode, UUID playerId)
+    {
+        Room room = findByCode(roomCode);
+
+        if (scoreService.countPlayersInRoom(room.getId()) >= room.getMaxNumberOfPlayers())
+        {
+            log.error("couldn't join player {} in room {} because the room is full", playerId, room.getId());
+            throw new RoomIsFull();
+        }
+
+        List<Score> playersScoreOrdered = scoreService.findUsersScoreboardOrderedByScore(room.getId());
+        Score score = scoreService.save(new CreateScoreRequestDTO(playerId, room.getId()));
+
+        return new JoinRoomResponseDTO(
+                room.getId(),
+                roomCode,
+                room.getIsPublic(),
+                room.getMaxNumberOfPlayers(),
+                room.getOwner(),
+                new PlayerScoreDTO(score.getId(), 0, score.getUser()),
+                playersScoreOrdered.stream().map(playerScoreboard ->
+                        new UserScoreboardResponse(playerScoreboard.getId(), playerScoreboard.getScore(), playerScoreboard.getUser())).toList());
     }
 }

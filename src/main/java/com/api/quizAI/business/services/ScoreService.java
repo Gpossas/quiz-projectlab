@@ -104,6 +104,17 @@ public class ScoreService
         log.info("deleted all scores in room {}", roomId);
     }
 
+    public int countPlayersInRoom(UUID roomId)
+    {
+        log.info("starting counting how many players are in room {}", roomId);
+
+        int playersCount = scoreRepository.countByRoomId(roomId);
+
+        log.info("counted how many players are in room {}", roomId);
+
+        return playersCount;
+    }
+
     private void checkUserInOtherRoom(UUID userId)
     {
         if (scoreRepository.existsByUserId(userId))

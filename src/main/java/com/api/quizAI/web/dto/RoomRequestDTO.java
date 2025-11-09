@@ -12,6 +12,9 @@ public record RoomRequestDTO(
         boolean isPublic,
 
         @Schema(example = "8")
+        @Max(value = 200, message = "O número máximo de jogadores em uma sala deve ser 200")
+        @Min(value = 1, message = "O número mínimo de jogadores em uma sala deve ser 1")
+        @NotNull
         int maxNumberOfPlayersInRoom,
 
         @Max(value = 60, message = "O tempo máximo entre questões é 60 segundos")

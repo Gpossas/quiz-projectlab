@@ -32,8 +32,8 @@ create table if not exists rooms(
     id UUID primary key,
     room_code char(8) not null unique,
     is_public boolean not null default true,
-    max_number_players integer,
     wait_time integer not null default 15,
+    max_number_players integer not null,
     quiz_id UUID,
     owner_id UUID not null unique,
     constraint room_quiz_fk

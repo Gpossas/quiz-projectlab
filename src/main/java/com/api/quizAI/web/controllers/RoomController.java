@@ -5,7 +5,6 @@ import com.api.quizAI.business.services.ScoreService;
 import com.api.quizAI.core.domain.Room;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.web.dto.*;
-import com.api.quizAI.web.payload.UserScoreboardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -62,7 +60,7 @@ public class RoomController
                         room.getIsPublic(),
                         roomRequestDTO.maxNumberOfPlayersInRoom(),
                         room.getOwner(),
-                        new PlayerScoreDTO(score.getId(), 0)),
+                        new PlayerScoreDTO(score.getId(), 0, score.getUser())),
                 HttpStatus.CREATED);
     }
 
@@ -80,22 +78,11 @@ public class RoomController
     {
         log.info("starting request to join player {} in room {}", joinRoomRequest.userId(), roomCode);
 
-        Room room = roomService.findByCode(roomCode);
-        //todo: check room capacity before allowing user join room
-        List<Score> playersScoreOrdered = scoreService.findUsersScoreboardOrderedByScore(room.getId());
-        Score score = scoreService.save(new CreateScoreRequestDTO(joinRoomRequest.userId(), room.getId()));
+        JoinRoomResponseDTO roomResponse = roomService.joinRoom(roomCode, joinRoomRequest.userId());
 
         log.info("successfully joined player {} in room {}", joinRoomRequest.userId(), roomCode);
 
-        return new ResponseEntity<>(new JoinRoomResponseDTO(
-                room.getId(),
-                roomCode,
-                room.getIsPublic(),
-                room.getMaxNumberOfPlayers(),
-                room.getOwner(),
-                new PlayerScoreDTO(score.getId(), 0),
-                playersScoreOrdered.stream().map(playerScoreboard -> new UserScoreboardResponse(playerScoreboard.getId(), playerScoreboard.getScore(), playerScoreboard.getUser())).toList()),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(roomResponse, HttpStatus.CREATED);
     }
 
 
