@@ -103,4 +103,12 @@ public class GlobalExceptionHandler
         problemDetail.setTitle("Jogador já está em outra sala");
         return problemDetail;
     }
+
+    @ExceptionHandler(RoomIsFull.class)
+    public ProblemDetail handleRoomIsFullException(RoomIsFull exception)
+    {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+        problemDetail.setTitle("A sala está lotada");
+        return problemDetail;
+    }
 }
