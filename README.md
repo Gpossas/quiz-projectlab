@@ -8,6 +8,15 @@
 1. git clone https://github.com/Gpossas/quiz-projectlab.git
 2. Abra o projeto na IDE e execute a classe QuizAiApplication com o método main
 
+## Para rodar no VSCode
+
+```
+ export GOOGLE_API_KEY='sua_chave_api'
+ ./mvnw spring-boot:run
+```
+
+OBS: Certifique-se de ter JDK instalado.
+
 # Documentação da API (Swagger)
 http://localhost:8080/swagger-ui.html
 
@@ -77,11 +86,4 @@ SUBSCRIBE: /topic/rooms/{roomId}/update-score
 
 ---
 
-## Para rodar no VSCode
 
-```
- export GOOGLE_API_KEY='sua_chave_api'
- ./mvnw spring-boot:run
-```
-
-OBS: Certifique-se de ter JDK instalado.
