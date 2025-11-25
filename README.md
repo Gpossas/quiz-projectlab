@@ -74,3 +74,14 @@ SUBSCRIBE: /topic/rooms/{roomId}/update-score
     "pointsEarned": 10
  }
 ```
+
+---
+
+## Para rodar no VSCode
+
+```
+ export GOOGLE_API_KEY='sua_chave_api'
+ ./mvnw spring-boot:run
+```
+
+OBS: Certifique-se de ter JDK instalado.
