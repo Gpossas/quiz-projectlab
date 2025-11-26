@@ -1,7 +1,7 @@
 services:
   back:
     build: .
-    container_name: quiz-back_container
+    container_name: quiz-back-container
     env_file:
       - .env
     ports:
