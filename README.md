@@ -17,6 +17,40 @@
 
 OBS: Certifique-se de ter JDK instalado.
 
+# Como rodar o projeto com Docker
+
+## Pré-requisitos
+
+Certifique-se de ter instalado:
+
+- **Docker Desktop**
+
+OBS: Dentro da pasta do projeto rode o comando
+
+```bash
+docker compose up
+```
+
+### isso irá:
+- Criar a imagem
+- Criar o container a partir da imagem
+- Iniciar a aplicação
+
+
+### se tiver feito alteração no código java rode:
+
+```bash
+docker compose build --no-cache
+docker compose up
+```
+
+### isso irá:
+- Recriar a imagem com o build
+- E o compose up ira criar o container baseado nessa imagem
+
+
+
+
 # Documentação da API (Swagger)
 http://localhost:8080/swagger-ui.html
 
