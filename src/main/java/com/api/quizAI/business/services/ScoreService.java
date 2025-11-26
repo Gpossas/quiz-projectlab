@@ -1,12 +1,12 @@
 package com.api.quizAI.business.services;
 
-import com.api.quizAI.core.domain.Answer;
+import com.api.quizAI.business.factories.ScoreFactory;
 import com.api.quizAI.core.domain.Score;
 import com.api.quizAI.core.domain.User;
 import com.api.quizAI.core.exceptions.PlayerAlreadyInOtherRoom;
 import com.api.quizAI.core.exceptions.ScoreNotFound;
 import com.api.quizAI.infra.repository.ScoreRepository;
-import com.api.quizAI.web.dto.AnswerRequestDTO;
+import com.api.quizAI.web.dto.CalculatePlayerScoreDTO;
 import com.api.quizAI.web.dto.CreateScoreRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,9 @@ import java.util.*;
 public class ScoreService
 {
     private final ScoreRepository scoreRepository;
-    private final AnswerService answerService;
     private final UserService userService;
+    private final ScoreFactory scoreFactory;
+    private final int basePoint = 10;
 
     public Score save(CreateScoreRequestDTO scoreboardRequest)
     {
@@ -70,21 +71,15 @@ public class ScoreService
         return scores;
     }
 
-    public Integer calculatePlayerScore(UUID scoreId, AnswerRequestDTO answerRequest)
+    public Integer calculatePlayerScore(CalculatePlayerScoreDTO dto)
     {
-        Answer answer = answerService.findById(answerRequest.answerId());
+        int pointsEarned = dto.isCorrectAnswer() ? basePoint + scoreFactory.getBonus(dto.questionWasSentAt(), dto.totalTimeToAnswerQuestionInSeconds()) : -2;
 
-        if (answer.isCorrectAnswer())
-        {
-            int pointsEarned = 10;
-            Score score = findById(scoreId);
-            score.addScore(pointsEarned);
-            scoreRepository.save(score);
+        Score score = findById(dto.scoreId());
+        score.addScore(pointsEarned);
+        scoreRepository.save(score);
 
-            return pointsEarned;
-        }
-
-        return 0;
+        return pointsEarned;
     }
 
     public List<Score> findUsersScoreboardOrderedByScore(UUID roomId)

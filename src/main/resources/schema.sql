@@ -6,6 +6,7 @@ create table if not exists quizzes(
 create table if not exists questions(
     id UUID primary key,
     question_value text not null,
+    sent_at timestamp,
     quiz_id UUID not null,
     constraint quiz_fk
         foreign key (quiz_id)
@@ -31,6 +32,7 @@ create table if not exists rooms(
     id UUID primary key,
     room_code char(8) not null unique,
     is_public boolean not null default true,
+    wait_time integer not null default 15,
     max_number_players integer not null,
     quiz_id UUID,
     owner_id UUID not null unique,

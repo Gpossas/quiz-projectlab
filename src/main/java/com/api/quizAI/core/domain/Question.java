@@ -1,9 +1,11 @@
 package com.api.quizAI.core.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @ToString
 public class Question
 {
@@ -23,6 +26,10 @@ public class Question
 
     @Column(nullable = false, name = "question_value")
     private String value;
+
+    @Column(name = "sent_at")
+    @JsonIgnore
+    private OffsetDateTime sentAt;
 
     @OneToMany(targetEntity = Answer.class, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id", nullable = false)

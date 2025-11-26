@@ -17,6 +17,11 @@ public record RoomRequestDTO(
         @NotNull
         int maxNumberOfPlayersInRoom,
 
+        @Max(value = 60, message = "O tempo máximo entre questões é 60 segundos")
+        @Min(value = 5, message = "O tempo mínimo entre questões é 5 segundos")
+        @NotNull
+        int waitTimeInSeconds,
+
         @NotNull
         UUID ownerId
 ) {

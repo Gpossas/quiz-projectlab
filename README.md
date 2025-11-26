@@ -87,3 +87,41 @@ SUBSCRIBE: /topic/rooms/{roomId}/update-score
 ---
 
 
+## Iniciar partida
+
+#### Dono da sala envia pedido para iniciar partida
+```
+SEND: /quizAI/sendStartMatch/{roomId}
+ Payload: {
+    "playerId": "UUID"
+ }
+```
+
+#### Contagem regressiva para começar o quiz
+```
+SUBSCRIBE: /topic/room/{roomId}/start-match-countdown
+ Response: {
+    "timeRemainingInSeconds": 5
+ }
+```
+
+#### Servidor enviará a questão atual
+```
+SUBSCRIBE: /topic/room/{roomId}/question
+ Response: {
+    "questionId": "UUID",
+    "description": "string",
+    "answers": {
+        "answerId": "UUID",
+        "description": "string"
+    }
+ }
+```
+
+#### Contagem regressiva para a outra questão
+```
+SUBSCRIBE: /topic/room/{roomId}/question-countdown
+ Response: {
+    "timeRemainingInSeconds": 15
+ }
+```

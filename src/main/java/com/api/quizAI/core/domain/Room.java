@@ -30,6 +30,9 @@ public class Room
     @Column(name = "max_number_players")
     private Integer maxNumberOfPlayers;
 
+    @Column(name = "wait_time")
+    private Integer waitTimeBetweenQuestions;
+
     @OneToOne
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;

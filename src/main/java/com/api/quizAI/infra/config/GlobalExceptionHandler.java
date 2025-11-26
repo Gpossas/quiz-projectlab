@@ -96,6 +96,14 @@ public class GlobalExceptionHandler
         return problemDetail;
     }
 
+    @ExceptionHandler(MatchCanNotStartWithoutQuiz.class)
+    public ProblemDetail handleMatchCanNotStartWithoutQuizException(MatchCanNotStartWithoutQuiz exception)
+    {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FAILED_DEPENDENCY, exception.getMessage());
+        problemDetail.setTitle("Não pode inicar uma partida sem quiz");
+        return problemDetail;
+    }
+
     @ExceptionHandler(PlayerAlreadyInOtherRoom.class)
     public ProblemDetail handlePlayerAlreadyInOtherRoomException(PlayerAlreadyInOtherRoom exception)
     {
