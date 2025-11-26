@@ -32,7 +32,7 @@ public class AnswerController
             - Return the points earned
             """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok", content = @Content(schema = @Schema(implementation = CorrectAnswerIdDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Ok", content = @Content(schema = @Schema(implementation = PlayerAnswerResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ProblemDetailExample.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = BadRequestExample.class))),
             @ApiResponse(responseCode = "424", description = "Failed Dependency", content = @Content(schema = @Schema(implementation = BadRequestExample.class)))
