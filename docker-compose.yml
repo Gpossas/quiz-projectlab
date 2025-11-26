@@ -1,0 +1,9 @@
+services:
+  back:
+    build: .
+    container_name: quiz-back-container
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    restart: on-failure:3

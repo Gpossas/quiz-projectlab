@@ -8,6 +8,49 @@
 1. git clone https://github.com/Gpossas/quiz-projectlab.git
 2. Abra o projeto na IDE e execute a classe QuizAiApplication com o método main
 
+## Para rodar no VSCode
+
+```
+ export GOOGLE_API_KEY='sua_chave_api'
+ ./mvnw spring-boot:run
+```
+
+OBS: Certifique-se de ter JDK instalado.
+
+# Como rodar o projeto com Docker
+
+## Pré-requisitos
+
+Certifique-se de ter instalado:
+
+- **Docker Desktop**
+
+OBS: Dentro da pasta do projeto rode o comando
+
+```bash
+docker compose up
+```
+
+### isso irá:
+- Criar a imagem
+- Criar o container a partir da imagem
+- Iniciar a aplicação
+
+
+### se tiver feito alteração no código java rode:
+
+```bash
+docker compose build --no-cache
+docker compose up
+```
+
+### isso irá:
+- Recriar a imagem com o build
+- E o compose up ira criar o container baseado nessa imagem
+
+
+
+
 # Documentação da API (Swagger)
 http://localhost:8080/swagger-ui.html
 
@@ -74,6 +117,9 @@ SUBSCRIBE: /topic/rooms/{roomId}/update-score
     "pointsEarned": 10
  }
 ```
+
+---
+
 
 ## Iniciar partida
 
