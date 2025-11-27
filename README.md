@@ -4,6 +4,11 @@
 2. Copie a chave gerada
 3. Crie a variável de ambiente -> GOOGLE_API_KEY=valor_da_chave_gerada
 
+## Configuração do profile no .env
+- dev vai rodar em memória cache
+- prod vai rodar com banco postgres não perdendo os dados
+
+
 ## Executando o projeto
 1. git clone https://github.com/Gpossas/quiz-projectlab.git
 2. Abra o projeto na IDE e execute a classe QuizAiApplication com o método main
@@ -47,8 +52,6 @@ docker compose up
 ### isso irá:
 - Recriar a imagem com o build
 - E o compose up ira criar o container baseado nessa imagem
-
-
 
 
 # Documentação da API (Swagger)
