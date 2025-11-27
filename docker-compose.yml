@@ -7,3 +7,24 @@ services:
     ports:
       - "8080:8080"
     restart: on-failure:3
+    networks:
+      - public_network
+  db:
+    image: postgres:17-alpine
+    container_name: postgres_teste
+    restart: always
+    volumes:
+      - quizData:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "2543:5432"
+    networks:
+      - public_network
+
+
+volumes:
+  quizData:
+
+networks:
+  public_network:
