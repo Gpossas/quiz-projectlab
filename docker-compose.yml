@@ -11,7 +11,7 @@ services:
       - public_network
   db:
     image: postgres:17-alpine
-    container_name: postgres_teste
+    container_name: quiz-db-postgres
     restart: always
     volumes:
       - quizData:/var/lib/postgresql/data
