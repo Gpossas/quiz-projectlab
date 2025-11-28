@@ -9,6 +9,8 @@ services:
     restart: on-failure:3
     networks:
       - public_network
+    environment:
+      - PROFILE=prod
   db:
     image: postgres:17-alpine
     container_name: quiz-db-postgres
