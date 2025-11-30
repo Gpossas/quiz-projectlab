@@ -23,7 +23,14 @@ services:
       - "2543:5432"
     networks:
       - public_network
-
+  adminer:
+    image: adminer
+    container_name: adminer_quiz
+    restart: always
+    ports:
+      -  "8082:8080"
+    networks:
+      - public_network
 
 volumes:
   quizData:
