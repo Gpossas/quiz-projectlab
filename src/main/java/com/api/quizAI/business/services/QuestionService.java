@@ -8,6 +8,8 @@ import com.api.quizAI.infra.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -57,10 +59,12 @@ public class QuestionService
         throw new NoneCorrectAnswerFound();
     }
 
-    public void setTimeSentToMatch(Question question)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void setTimeSentToMatch(UUID questionId)
     {
-        log.info("setting time sent for question {}", question.getId());
+        log.info("setting time sent for question {}", questionId);
 
+        Question question = findById(questionId);
         question.setSentAt(OffsetDateTime.now());
         save(question);
 

@@ -7,6 +7,7 @@ import com.api.quizAI.core.domain.User;
 import com.api.quizAI.core.exceptions.MatchCanNotStartWithoutQuiz;
 import com.api.quizAI.web.dto.QuestionDTO;
 import com.api.quizAI.web.payload.*;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,6 +27,7 @@ public class WebsocketService
     private final QuestionService questionService;
     private final UserService userService;
     private final RoomAuthorization roomAuthorization;
+    private final EntityManager entityManager;
 
     public void broadcastScoreboardUpdate(UUID roomId, ScoreboardBroadcastResponse updateScoreboardResponse)
     {
@@ -75,7 +77,7 @@ public class WebsocketService
         log.info("match started!");
         for (Question question: room.getQuiz().getQuestions())
         {
-            questionService.setTimeSentToMatch(question);
+            questionService.setTimeSentToMatch(question.getId());
             messageBroker.convertAndSend("/topic/rooms/" + roomId + "/question", QuestionDTO.domainToDTO(question));
             log.info("question {} sent to users in room {}", question.getId(), roomId);
 
