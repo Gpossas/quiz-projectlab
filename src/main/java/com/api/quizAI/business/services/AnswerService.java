@@ -4,6 +4,7 @@ import com.api.quizAI.core.domain.Answer;
 import com.api.quizAI.core.domain.Question;
 import com.api.quizAI.core.domain.Room;
 import com.api.quizAI.core.exceptions.AnswerNotFound;
+import com.api.quizAI.core.exceptions.QuestionWasNotSentYet;
 import com.api.quizAI.infra.repository.AnswerRepository;
 import com.api.quizAI.web.dto.AnswerRequestDTO;
 import com.api.quizAI.web.dto.CalculatePlayerScoreDTO;
@@ -39,6 +40,7 @@ public class AnswerService
     {
         Room room = roomService.findById(answerRequest.roomId());
         Question question = questionService.findById(answerRequest.questionId());
+        checkQuestionWasSentByServer(question);
         Answer answer = findById(answerRequest.answerId());
 
         log.info("calculating player {} score in room {}", answerRequest.playerId(), answerRequest.roomId());
@@ -57,5 +59,14 @@ public class AnswerService
                 correctAnswerId,
                 answerRequest.answerId()
         );
+    }
+
+    private void checkQuestionWasSentByServer(Question question)
+    {
+        if (question.getSentAt() == null)
+        {
+            log.error("player tried to answer a question not sent by the server {}", question.getId());
+            throw new QuestionWasNotSentYet();
+        }
     }
 }

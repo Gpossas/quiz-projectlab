@@ -119,4 +119,12 @@ public class GlobalExceptionHandler
         problemDetail.setTitle("A sala está lotada");
         return problemDetail;
     }
+
+    @ExceptionHandler(QuestionWasNotSentYet.class)
+    public ProblemDetail handleQuestionWasNotSentYetException(QuestionWasNotSentYet exception)
+    {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+        problemDetail.setTitle("Resposta enviada para uma questão ainda não enviada pelo servidor");
+        return problemDetail;
+    }
 }
