@@ -43,6 +43,13 @@ Execute no terminal: `git clone https://github.com/Gpossas/quiz-projectlab.git`
 - No vscode
   - Execute no terminal `./mvnw spring-boot:run`
 
+
+### Visualizar Banco de Dados
+
+- Acesse na web a url http://localhost:8082
+- Acesse com as variáveis que estão no seu .env
+
+
 # Documentação da API (Swagger)
 - Execute a aplicação
 - No navegador acesse: http://localhost:8080/swagger-ui.html
