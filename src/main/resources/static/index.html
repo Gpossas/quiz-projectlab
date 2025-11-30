@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring WebSocket Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h1>Spring WebSocket Room Test</h1>
+
+<label>
+    Room ID:
+    <input type="text" id="roomId" />
+    Player ID:
+    <input type="text" id="playerId" />
+</label>
+<br />
+<button onclick="connect()">Connect</button>
+<button onclick="disconnect()">Disconnect</button>
+
+<hr />
+
+<br />
+<button onclick="startMatch()">Start Match</button>
+
+<hr />
+<div id="output"></div>
+
+<script>
+    let stompClient = null;
+    let currentRoom = null;
+    let currentPlayer = null;
+
+    function connect() {
+      const socket = new SockJS("http://localhost:8080/establish-websockets-connection");
+      stompClient = Stomp.over(socket);
+
+      const roomId = document.getElementById("roomId").value;
+      const playerId = document.getElementById("playerId").value;
+      currentRoom = roomId;
+      currentPlayer = playerId;
+
+      stompClient.connect({}, function (frame) {
+        log("Connected: " + frame);
+
+        // Subscribe to the room topic
+        stompClient.subscribe(`/topic/rooms/${currentRoom}/start-match-countdown`, function (message) {
+          log("Starting in " + JSON.parse(message.body).timeRemainingInSeconds + "...");
+        });
+
+        stompClient.subscribe(`/topic/rooms/${currentRoom}/question`, function (message) {
+          log("Received question: " + message.body);
+        });
+
+        stompClient.subscribe(`/topic/rooms/${currentRoom}/question-countdown`, function (message) {
+          log("Time remaining: " + JSON.parse(message.body).timeRemainingInSeconds);
+        });
+      });
+    }
+
+    function disconnect() {
+      if (stompClient !== null) {
+        stompClient.disconnect();
+        log("Disconnected");
+      }
+    }
+
+    function startMatch() {
+      if (!stompClient || !stompClient.connected) {
+        log("⚠️ Not connected!");
+        return;
+      }
+
+      stompClient.send(`/quizAI/sendStartMatch/${currentRoom}`, {}, JSON.stringify({
+        playerId: currentPlayer
+      }));
+
+      log("player" + currentPlayer + "started match");
+    }
+
+    function log(text) {
+      const output = document.getElementById("output");
+      output.innerHTML += text + "<br/>";
+    }
+</script>
+</body>
+</html>
