@@ -19,11 +19,24 @@ Execute no terminal: `git clone https://github.com/Gpossas/quiz-projectlab.git`
 ### Executando o projeto
 - execute o comando docker `docker compose up -d`
 
-### isso irá:
-- Criar a imagem
-- Criar o container com a aplicação backend e base de dados postgres
-- Iniciar a aplicação
+### Visualizar Banco de Dados
 
+- Acesse na web a url http://localhost:8082
+- Acesse com as variáveis que estão no seu .env
+  - Sistema: PostgreSQL
+
+  - Usuário: valor de POSTGRES_USER
+
+  - Senha: valor de POSTGRES_PASSWORD
+
+  - Base de dados: valor de POSTGRES_DB
+
+
+### isso irá:
+- Criar a imagem da aplicação
+- Subir os containers do backend e do banco de dados PostgreSQL
+- Subir o container do Adminer para visualização do banco
+- Iniciar toda a aplicação automaticamente 
 
 ## Opção 2: Desenvolvedores(mudanças feitas ao código são refletidas na hora)
 ### Pré-requisitos
